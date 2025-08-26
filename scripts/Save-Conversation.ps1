@@ -19,26 +19,25 @@ $ConversationsDir = Join-Path $BaseProjectsPath "conversations"
 # Create conversations directory if it doesn't exist
 if (!(Test-Path $ConversationsDir)) {
     New-Item -ItemType Directory -Path $ConversationsDir -Force | Out-Null
-    Write-Host "✅ Created conversations directory: $ConversationsDir" -ForegroundColor Green
+    Write-Host "Created conversations directory: $ConversationsDir" -ForegroundColor Green
 }
 
 # Generate filename with timestamp
 $Timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm"
-$SafeTopic = $Topic -replace '[^\w\s-]', '' -replace '\s+', '-'
+$SafeTopic = ($Topic -replace '[^\w\s-]', '') -replace '\s+', '-'
 $Filename = "$Timestamp" + "_$SafeTopic.md"
 $FilePath = Join-Path $ConversationsDir $Filename
 
 # If no conversation text provided, prompt for it or use clipboard
 if ([string]::IsNullOrWhiteSpace($ConversationText)) {
     Write-Host "No conversation text provided. Checking clipboard..." -ForegroundColor Yellow
-    
     try {
         $ConversationText = Get-Clipboard -Raw
         if ([string]::IsNullOrWhiteSpace($ConversationText)) {
             Write-Host "Clipboard is empty. Please paste your conversation and try again." -ForegroundColor Red
             $ConversationText = Read-Host "Or paste the conversation text here"
         } else {
-            Write-Host "✅ Found text in clipboard!" -ForegroundColor Green
+            Write-Host "Found text in clipboard." -ForegroundColor Green
         }
     }
     catch {
@@ -47,7 +46,7 @@ if ([string]::IsNullOrWhiteSpace($ConversationText)) {
     }
 }
 
-# Create the markdown content
+# Build markdown content
 $MarkdownContent = @"
 # Conversation: $Topic
 
@@ -58,37 +57,32 @@ $MarkdownContent = @"
 ---
 
 $ConversationText
-
----
-
-*Saved automatically with conversation auto-saver*
-*File: $Filename*
 "@
 
 # Save the file
 try {
     $MarkdownContent | Out-File -FilePath $FilePath -Encoding UTF8
-    Write-Host "✅ Conversation saved to: $FilePath" -ForegroundColor Green
-    
+    Write-Host ("Conversation saved to: " + $FilePath) -ForegroundColor Green
+
     # Open in VS Code if available
     try {
         code $FilePath
-        Write-Host "✅ Opened in VS Code for review" -ForegroundColor Green
+        Write-Host 'Opened in VS Code for review' -ForegroundColor Green
     }
     catch {
-        Write-Host "ℹ️  VS Code not available, file saved successfully" -ForegroundColor Cyan
+        Write-Host 'VS Code not available, file saved successfully' -ForegroundColor Cyan
     }
-    
+
     # Return the file path for potential chaining with other scripts
     return $FilePath
 }
 catch {
-    Write-Host "❌ Error saving conversation: $_" -ForegroundColor Red
+    Write-Host ('Error saving conversation: ' + $_) -ForegroundColor Red
 }
 
 # Show instructions for next time
 Write-Host ""
-Write-Host "💡 Quick usage tips:" -ForegroundColor Cyan
-Write-Host "  - Copy conversation to clipboard, then run this script" -ForegroundColor White
-Write-Host "  - Or drag & drop this script to create a desktop shortcut" -ForegroundColor White
-Write-Host "  - Use with project creation: .\Save-Conversation.ps1 -Topic 'New Feature' -ProjectName 'my-project'" -ForegroundColor White
+Write-Host 'Quick usage tips:' -ForegroundColor Cyan
+Write-Host '  - Copy conversation to clipboard, then run this script' -ForegroundColor White
+Write-Host '  - Or drag and drop this script to create a desktop shortcut' -ForegroundColor White
+Write-Host '  - Use with project creation: .\Save-Conversation.ps1 -Topic "New Feature" -ProjectName "my-project"' -ForegroundColor White
