@@ -1,0 +1,12 @@
+{
+  "name": "Python Basic",
+  "description": "Simple Python project with virtual environment setup",
+  "category": "python",
+  "technologies": ["Python"],
+  "variables": {
+    "PROJECT_NAME": "Project name",
+    "PROJECT_DESCRIPTION": "Project description", 
+    "DATE": "Current date",
+    "GITHUB_USERNAME": "GitHub username"
+  }
+}

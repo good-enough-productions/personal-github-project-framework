@@ -1,0 +1,10 @@
+# Basic Python dependencies
+# Add your project-specific requirements here
+
+# Common useful packages (uncomment as needed):
+# requests>=2.31.0      # HTTP requests
+# click>=8.1.0          # Command line interface
+# python-dotenv>=1.0.0  # Environment variables
+# pydantic>=2.0.0       # Data validation
+# fastapi>=0.100.0      # Web API framework
+# streamlit>=1.25.0     # Web app framework

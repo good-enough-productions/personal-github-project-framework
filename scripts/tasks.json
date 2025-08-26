@@ -1,0 +1,138 @@
+﻿{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "GitHub: Create New Project",
+            "type": "shell",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "new",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "command": "gh",
+            "args": [
+                "repo",
+                "create",
+                "${input:repoName}",
+                "--public",
+                "--source=.",
+                "--push"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "detail": "Creates a new GitHub repository from the current workspace and pushes initial content"
+        },
+        {
+            "label": "GitHub: Quick Project Setup",
+            "type": "shell",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "new",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "command": "powershell",
+            "args": [
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                "& {",
+                    "$repoName = '${input:repoName}';",
+                    "$description = '${input:description}';",
+                    "Write-Host 'Creating GitHub repository...' -ForegroundColor Cyan;",
+                    "gh repo create $repoName --public --description \"$description\";",
+                    "if ($LASTEXITCODE -eq 0) {",
+                        "Write-Host 'Initializing local repository...' -ForegroundColor Cyan;",
+                        "git init;",
+                        "git remote add origin \"https://github.com/$(gh api user --jq .login)/$repoName.git\";",
+                        "echo '# $repoName' > README.md;",
+                        "echo '' >> README.md;",
+                        "echo '$description' >> README.md;",
+                        "echo '' >> README.md;",
+                        "echo 'Created on $(Get-Date -Format \"MMMM dd, yyyy\")' >> README.md;",
+                        "git add README.md;",
+                        "git commit -m 'Initial commit';",
+                        "git branch -M main;",
+                        "git push -u origin main;",
+                        "Write-Host 'âœ… Project setup complete!' -ForegroundColor Green;",
+                    "} else {",
+                        "Write-Host 'âŒ Failed to create repository' -ForegroundColor Red;",
+                    "}",
+                "}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "detail": "Complete setup: creates GitHub repo, initializes local git, adds README, and pushes to GitHub"
+        },
+        {
+            "label": "GitHub: Clone and Open Project",
+            "type": "shell",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "new",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "command": "powershell",
+            "args": [
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                "& {",
+                    "$repoUrl = '${input:repoUrl}';",
+                    "$projectsDir = 'C:\\Users\\dschm\\Documents\\GitHub';",
+                    "if (!(Test-Path $projectsDir)) { New-Item -ItemType Directory -Path $projectsDir -Force | Out-Null };",
+                    "Set-Location $projectsDir;",
+                    "Write-Host 'Cloning repository...' -ForegroundColor Cyan;",
+                    "git clone $repoUrl;",
+                    "if ($LASTEXITCODE -eq 0) {",
+                        "$repoName = Split-Path $repoUrl -Leaf;",
+                        "$repoName = $repoName -replace '\\.git$', '';",
+                        "$projectPath = Join-Path $projectsDir $repoName;",
+                        "Write-Host 'Opening in VS Code...' -ForegroundColor Cyan;",
+                        "code $projectPath;",
+                        "Write-Host 'âœ… Project opened!' -ForegroundColor Green;",
+                    "} else {",
+                        "Write-Host 'âŒ Failed to clone repository' -ForegroundColor Red;",
+                    "}",
+                "}"
+            ],
+            "problemMatcher": [],
+            "detail": "Clone an existing GitHub repository and open it in VS Code"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "repoName",
+            "type": "promptString",
+            "description": "Enter the name for your new GitHub repository (no spaces, use hyphens)",
+            "default": "${workspaceFolderBasename}"
+        },
+        {
+            "id": "description", 
+            "type": "promptString",
+            "description": "Enter a short description for your repository",
+            "default": "A new project created with VS Code automation"
+        },
+        {
+            "id": "repoUrl",
+            "type": "promptString", 
+            "description": "Enter the GitHub repository URL to clone (e.g., https://github.com/username/repo.git)"
+        }
+    ]
+}
+

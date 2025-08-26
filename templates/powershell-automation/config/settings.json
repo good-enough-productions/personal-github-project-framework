@@ -1,0 +1,19 @@
+{
+  "projectName": "{{PROJECT_NAME}}",
+  "version": "1.0.0",
+  "settings": {
+    "enableLogging": true,
+    "logLevel": "INFO",
+    "maxLogFiles": 10,
+    "enableNotifications": true
+  },
+  "paths": {
+    "workingDirectory": ".",
+    "outputDirectory": "./output"
+  },
+  "automation": {
+    "retryAttempts": 3,
+    "delayBetweenAttempts": 2,
+    "timeoutSeconds": 300
+  }
+}

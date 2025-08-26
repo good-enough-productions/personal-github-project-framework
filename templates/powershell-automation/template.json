@@ -1,0 +1,12 @@
+{
+  "name": "PowerShell Automation",
+  "description": "Windows automation script with proper structure and error handling",
+  "category": "automation",
+  "technologies": ["PowerShell", "Windows"],
+  "variables": {
+    "PROJECT_NAME": "Project name",
+    "PROJECT_DESCRIPTION": "Project description",
+    "DATE": "Current date",
+    "GITHUB_USERNAME": "GitHub username"
+  }
+}

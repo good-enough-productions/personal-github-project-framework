@@ -1,0 +1,12 @@
+{
+  "name": "Web App Basic",
+  "description": "Simple HTML/CSS/JavaScript web application with modern structure",
+  "category": "web",
+  "technologies": ["HTML", "CSS", "JavaScript"],
+  "variables": {
+    "PROJECT_NAME": "Project name",
+    "PROJECT_DESCRIPTION": "Project description",
+    "DATE": "Current date",
+    "GITHUB_USERNAME": "GitHub username"
+  }
+}
